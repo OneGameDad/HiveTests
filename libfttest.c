@@ -6,6 +6,7 @@
 #include <limits.h>
 #include <string.h>
 #include <ctype.h>
+#include <bsd/string.h>
 
 #define BUFFER 20
 
@@ -40,8 +41,10 @@ char ft_setchar(); /* Returns an integer */
 size_t ft_setsizet(); /* Returns a size_t */
 int ft_setint(); /* Returns an integer */
 char test(unsigned int i, char str); /*Tests for ft_strmapi and ft_striteri*/
-void print_list(t_list *lst);
-void print_content(void *content);
+void print_list(t_list *lst); /*Prints a linked list*/
+void print_content(void *content); /*Prints content of a node from a linked list*/
+char *strjoin(const char *s1, const char *str2); /*Does a strjoin*/
+char *strtrim(char *s);
 
 
 int	main(void)
@@ -188,7 +191,7 @@ int	main(void)
 				dest2 = malloc(sizeof(char) * (buff + 1));
 				i = ft_strlcpy(dest1, str1, buff);
 				j = strlcpy(dest2, str2, buff);
-				printf("Your functions returns: %d, the original function returns: %d", i, j);
+				printf("Your functions returns: %zu, the original function returns: %zu", i, j);
 				break;
 			case 'L': case 'l':
 				printf("\nTESTS ft_strlcat\n");
@@ -196,8 +199,8 @@ int	main(void)
 				str2 = ft_setstr();
 				printf("Set the size of the buffer: ");
 				scanf("%zd", &buff);
-				char catstr1;
-				char catstr2;
+				char *catstr1;
+				char *catstr2;
 				catstr1 = malloc(sizeof(char) * (buff + 1));
 				catstr2 = malloc(sizeof(char) * (buff + 1));
 				printf("Your functions returns: %zu, the original function returns: %zu", ft_strlcat(catstr1, str1, buff), strlcat(catstr2, str2, buff));
@@ -243,7 +246,8 @@ int	main(void)
 				c = ft_setchar();
 				n = ft_setsizet();
 				str2 = ft_memchr(str1, c, n);
-				printf("Your functions returns: %s, the original function returns: %s", ft_memchr(str1, c, n), memchr(str1, c, n));
+				str3 = memchr(str1, c, n);
+				printf("Your functions returns: %s, the original function returns: %s", str2, str3);
 				break;
 			case 'S': case 's':
 				printf("\nTESTS ft_memcmp\n");
@@ -273,7 +277,8 @@ int	main(void)
 				printf("Enter the size of the variable you want to have an array of: 1 - Char 4 - Integer - 8 Long Int 16 - Long Long Int: ");
 				scanf("%d", &size);
 				p_char1 = ft_calloc(n, size);
-				printf("Your functions returns: %s, the original function returns: %s", ft_calloc(n, size), calloc(n, size));
+				p_char2 = calloc(n, size);
+				printf("Your functions returns: %s, the original function returns: %s", p_char1, p_char2);
 				break;
 			case 'W': case 'w':
 				printf("\nTESTS ft_strdup\n");
@@ -287,8 +292,8 @@ int	main(void)
 				str1 = ft_setstr();
 				num = ft_setint();
 				str2 = ft_substr(str1, num, ft_strlen(str1));
-				str3 = substr(str1, num, strlen(str1));
-				printf("Your functions returns: %s, the original function returns: %s", str2, str3);
+				str4 = strncpy(str3, &str1[num], (strlen(str1) - num));
+				printf("Your functions returns: %s, the original function returns: %s", str2, str4);
 				break;
 			case 'Y': case 'y':
 				printf("\nTESTS ft_strjoin\n");
@@ -304,8 +309,10 @@ int	main(void)
 				str1 = ft_setstr();
 				printf("Now you should enter what that set of beginning and ending characters was");
 				str2 = ft_setstr();
+				printf("The origianl strtrim only removes whitespace from the beginning & end of a string. So make a new string with said whitespace.\n");
+				str4 = ft_setstr();
 				str3 = ft_strtrim(str1, str2);
-				str4 = strtrim(str1, str2);
+				strtrim(str4);
 				printf("Your functions returns: %s, the original function returns: %s", str3, str4);
 				break;
 			case '0':
@@ -315,21 +322,21 @@ int	main(void)
 				printf("You will be prompted to now provide the character that divides the string.\n");
 				c = ft_setchar();
 				p_arr1 = ft_split(str1, c);
-				p_arr2 = strtok(c, str1);
+				p_char1 = strtok(&c, str1);
 				printf("The split string by %c looks like this:\n", c);
 				i = 0;
-				while (p_arr1[i] && p_arr2[2])
+				while (p_arr1[i])
 				{
 					printf("Your function returns: %s\n", p_arr1[i]);
-					printf("Original function returns: %s\n", p_arr2[i]);
 					++i;
 				}
+				printf("The original function returns: %s", p_char1);
 				break;
 			case '1':
 				printf("\nTESTS ft_itoa\n");
 				num = ft_setint();
 				str1 = ft_itoa(num);
-				str2 = itoa(num);
+				str2 = itoa(num, str2, 10);
 				printf("Your functions returns: %s, the original function returns: %s", str1, str2);
 				break;
 			case '2':
@@ -509,4 +516,16 @@ void print_list(t_list *lst)
 void print_content(void *content)
 {
 	printf("%s\n", content);
+}
+
+char *strjoin(const char *s1, const char *s2)
+{
+	char *result = malloc(strlen(s1) + strlen(s2) + 1);
+
+	if (result)
+	{
+		strcpy(result, s1);
+		strcat(result, s2);
+	}
+	return (result);
 }
