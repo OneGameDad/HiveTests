@@ -1,35 +1,51 @@
 #include "libft.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <strings.h>
+#include <limits.h>
+#include <string.h>
+#include <ctype.h>
 
 #define BUFFER 20
 
 /* Global variables */
 int	len = BUFFER;
+char 	letter;
+char	ch;
+char 	c;
+int 	num;
+int 	fd;
+size_t	buff;
+size_t	m;
+size_t	n;
+size_t	i;
+size_t	j;
+char	*p_char1;
+char	*p_char2;
+char	**p_arr1;
+char	**p_arr2;
+char	*str1;
+char	*str2;
+char 	*str3;
+char 	*str4;
+char	*str5;
+char	*str6;
+t_list	*first;
+t_list	**list;
 
 /* Prototypes */
 char *ft_setstr(); /* Returns a pointer to a string */
 char ft_setchar(); /* Returns an integer */
 size_t ft_setsizet(); /* Returns a size_t */
 int ft_setint(); /* Returns an integer */
+char test(unsigned int i, char str); /*Tests for ft_strmapi and ft_striteri*/
+void print_list(t_list *lst);
+void print_content(void *content);
 
 
 int	main(void)
 {
-
-	char test;
-	char c;
-	int num;
-	int	result;
-	size_t answer;
-	size_t	buff;
-	void	*p_result;
-	char	*str1;
-	char	*str2;
-	char	ch;
-	size_t	n;
-	size_t	i;
-
 	while (1)
 	{
 		printf("Select a test and enter the code when prompted. The following tests are available:\n");
@@ -59,64 +75,61 @@ int	main(void)
 		printf(" X - ft_substr\n");
 		printf(" Y - ft_strjoin\n");
 		printf(" Z - ft_strtrim\n");
+		printf(" 0 (Zero) - ft_split\n");
+		printf(" 1 - ft_itoa\n");
+		printf(" 2 - ft_strmapi\n");
+		printf(" 3 - ft_striteri\n");
+		printf(" 4 - ft_putchar_fd\n");
+		printf(" 5 - ft_putstr_fd\n");
+		printf(" 6 - ft_putendl_fd\n");
+		printf(" 7 - ft_putnbr_fd\n");
+		printf("BONUS TESTS - TODO\n");
+		printf(" 8 - ft_lstnew\n");
+		printf(" 9 - ft_lstadd_front\n");
+		printf(" ! - ft_lstsize\n");
+		printf(" @ - ft_lstlast\n");
+		printf(" # - ft_lstadd_back\n");
+		printf(" & - ft_listiter\n");
+		printf(" ? - ft_lstmap\n");
+		printf(" $ - ft_lstdelone\n");
+		printf(" %% - ft_lstclear\n");
 		printf(" * - QUIT\n");
 		printf("Enter test letter: ");
-		test = getchar();
-		switch (test)
+		letter = getchar();
+		switch (letter)
 		{
 			case 'A': case 'a':
 				printf("\nTESTS ft_isalpha\n");
 				c = ft_setchar();
-				result = ft_isalpha(c);
-				if (result != 0)
-					printf("It is a letter\n");
-				else
-					printf("It is not all letter\n");
+				printf("Your function returns: %d , the original function returns: %d", ft_isalpha(c), isalpha(c));
 				break;
 			case 'B': case 'b':
 				printf("\nTESTS ft_isdigit\n");
 				num = ft_setint();
-				result = ft_isdigit(num);
-				if (result != 0)
-					printf("It is an integer\n");
-				else
-					printf("It is not an integer\n");
+				printf("Your functions returns: %d, the original function returns: %d", ft_isdigit(num), isdigit(num));
 				break;
 			case 'C': case 'c':
 				printf("\nTESTS ft_isalnum\n");
 				printf("Enter a character or digit: ");
 				scanf("%d", &num);
-				result = ft_isalnum(num);
-				if (result != 0)
-					printf("It is alphanumeric\n");
-				else
-					printf("It is not alphanumeric\n");
+				printf("Your functions returns: %d, the original function returns: %d", ft_isalnum(num), isalnum(num));
 				break;
 			case 'D': case 'd':
 				printf("\nTESTS ft_isascii\n");
 				printf("Enter a hex num to test if it can be an ascii character: ");
-				scanf("%X", &num2);
-				result = ft_isascii(num2);
-				if (result != 0)
-					printf("That is %c in ascii\n", num2);
-				else
-					printf("That cannot be represented in ascii\n");
+				scanf("%X", &num);
+				printf("Your functions returns: %d, the original function returns: %d", ft_isascii(num), isascii(num));
 				break;
 			case 'E': case 'e':
 				printf("\nTESTS ft_isprint\n");
 				printf("Enter a character, digit or symbol to see if it is printable: ");
 				scanf("%d", &num);
-				result = ft_isprint(num);
-				if (result != 0)
-					printf("That is printable\n");
-				else
-					printf("That is not printable\n");
+				printf("Your functions returns: %d, the original function returns: %d", ft_isprint(num), isprint(num));
 				break;
 			case 'F': case'f':
 				printf("\nTESTS ft_strlen\n");
 				str1 = ft_setstr();
-				result = ft_strlen(str1);
-				printf("Your string is %d characters long", result);
+				printf("Your functions returns: %zu, the original function returns: %lu", ft_strlen(str1), strlen(str1));
 				break;
 			case 'G': case 'g':
 				printf("\nTESTS ft_memset\n");
@@ -124,161 +137,166 @@ int	main(void)
 				printf("Enter a character: ");
 				c = ft_setchar();
 				printf("\nEnter a number: ");
-				scanf("%d", &num2);
-				ft_memset(str1, c, num2);
-				printf("Your string is now: %s\n", str1);
+				scanf("%d", &num);
+				str3 = ft_memset(str1, c, num);
+				str4 = memset(str1, c, num);
+				printf("Your functions returns: %s, the original function returns: %s", str3, str4);
 				break;
 			case 'H': case 'h':
 				printf("TESTS ft_bzero\n");
 				str1 = ft_setstr();
-				ft_bzero(str1, len);
-				printf("Your string is now: %s", str1);
+				str2 = ft_setstr();
+				n = strlen(str1);
+				m = strlen(str2);
+				ft_bzero(str1, n);
+				bzero(str2, m);
+				printf("Your functions returns: %s, the original function returns: %s", str1, str2);
 				break;
 			case 'I': case 'i':
 				printf("\nTESTS ft_memcpy\n");
 				str1 = ft_setstr();
 				str2 = ft_setstr();
+				strcpy(str3, str1);
+				strcpy(str4, str2);
+				str5 = ft_memcpy(str1, str2, c);
+				str6 = memcpy(str3, str4, c);
 				n = ft_setsizet();
-				printf("First String before memcpy: %s\n", str1);
-				printf("Second string before memcpy: %s\n", str2);
-				memcpy(str1, str2, n);
-				printf("First string after memcpy: %s\n", str1);
+				printf("Your functions returns: %s, the original function returns: %s", str5, str6);
 				break;
 			case 'J': case 'j':
 				printf("TESTS ft_memmove\n");
 				str1 = ft_setstr();
 				str2 = ft_setstr();
+				strcpy(str3, str1);
+				strcpy(str4, str2);
 				printf("First string before memmove: %s\n", str1);
 				printf("Second string: %s\n", str2);
-				n = setsizet();
-				ft_memmove(str1, str2, n);
-				printf("First string after memmove: %s\n", str1);
+				n = ft_setsizet();
+				str5 = ft_memmove(str1, str2, c);
+				str6 = memmove(str3, str4, c);
+				printf("Your functions returns: %s, the original function returns: %s", str5, str6);
 				break;
 			case 'K': case 'k':
 				printf("\nTESTS ft_strlcpy\n");
-				str1 = setstr();
+				str1 = ft_setstr();
+				strcpy(str2, str1);
 				printf("Set the size of the buffer:" );
-				scanf("%d", &buff);
-				char dest[buff];
-				result = ft_strlcpy(dest, str1, buffer);
-				printf("%d bytes were copied to the destination: %s\n", buffer, dest);
+				scanf("%zd", &buff);
+				char *dest1;
+				char *dest2;
+				dest1 = malloc(sizeof(char) * (buff + 1));
+				dest2 = malloc(sizeof(char) * (buff + 1));
+				i = ft_strlcpy(dest1, str1, buff);
+				j = strlcpy(dest2, str2, buff);
+				printf("Your functions returns: %d, the original function returns: %d", i, j);
 				break;
 			case 'L': case 'l':
 				printf("\nTESTS ft_strlcat\n");
-				str1 = setstr();
-				str2 = setstr();
+				str1 = ft_setstr();
+				str2 = ft_setstr();
 				printf("Set the size of the buffer: ");
-				scanf("%d", &buff);
-				char catstr[buff];
-				answer = strlcat(str1, str2, buff);
-				printf("The size of the new string is: %d\n", answer);
+				scanf("%zd", &buff);
+				char catstr1;
+				char catstr2;
+				catstr1 = malloc(sizeof(char) * (buff + 1));
+				catstr2 = malloc(sizeof(char) * (buff + 1));
+				printf("Your functions returns: %zu, the original function returns: %zu", ft_strlcat(catstr1, str1, buff), strlcat(catstr2, str2, buff));
 				break;
 			case 'M': case 'm':
 				printf("\nTESTS ft_toupper\n");
 				c = ft_setchar();
 				ch = ft_setchar();
-				printf("Character 1: %c and Character 2: %c\n", c, ch);
-				c = ft_toupper(c);
-				ch = ft_toupper(ch);
-				printf("Character 1 after ft_toupper: %c and Character 2 after ft_toupper: %c\n", c, ch);
+				printf("Your functions returns: %c, the original function returns: %c", ft_toupper(c), toupper(ch));
 				break;
 			case 'N': case 'n':
 				printf("\nTESTS ft_tolower\n");
 				c = ft_setchar();
 				ch = ft_setchar();
-				printf("Character 1: %c and Character 2: %c\n", c, ch);
-				c = ft_tolower(c);
-				ch = ft_tolower(ch);
-				printf("Character 1 after ft_tolower: %c and Character 2 after ft_tolower: %c\n", c, ch);
+				printf("Your functions returns: %c, the original function returns: %c", ft_tolower(c), tolower(ch));
 				break;
 			case 'O': case 'o':
 				printf("\nTESTS ft_strchr\n");
-				str1 = setstr();
-				ch = setchar();
-				p_result = ft_strrchr(str1, ch);
-				printf("The string after the first result of %c is %s", ch, p_result);
+				str1 = ft_setstr();
+				strcpy(str2, str1);
+				ch = ft_setchar();
+				printf("Your functions returns: %s, the original function returns: %s", ft_strchr(str1, ch), strchr(str2, ch));
 				break;
 			case 'P': case 'p':
 				printf("\nTESTS ft_strrchr\n");
-				str1 = setstr();
-				ch = setchar();
-				p_result = ft_strrchr(str1, ch);
-				printf("The string after the last instance of %c is %s", ch, p_result);
+				str1 = ft_setstr();
+				strcpy(str2, str1);
+				ch = ft_setchar();
+				printf("Your functions returns: %s, the original function returns: %s", ft_strrchr(str1, ch), strrchr(str2, ch));
 				break;
 			case 'Q': case 'q':
 				printf("\nTESTS ft_strncmp\n");
-				str1 = setstr();
-				str2 = setstr();
-				n = setint();
-				printf("First string is %s and second strind is is %s and n is %d\n", str1, str2, n);
-				result	= ft_strncmp(str1, str2, n);
-				printf("Result is %d\n", result);
+				str1 = ft_setstr();
+				str2 = ft_setstr();
+				strcpy(str3, str1);
+				strcpy(str4, str2);
+				n = ft_setint();
+				printf("Your functions returns: %d, the original function returns: %d", ft_strncmp(str1, str2, n), strncmp(str3, str4, n));
 				break;
 			case 'R': case 'r':
 				printf("\nTESTS ft_memchr\n");
 				str1 = ft_setstr();
 				c = ft_setchar();
 				n = ft_setsizet();
-				str2 = memchr(str1, c, n);
-				printf("String after %c is: %s\n", c, str2);
+				str2 = ft_memchr(str1, c, n);
+				printf("Your functions returns: %s, the original function returns: %s", ft_memchr(str1, c, n), memchr(str1, c, n));
 				break;
 			case 'S': case 's':
 				printf("\nTESTS ft_memcmp\n");
 				str1 = ft_setstr();
 				str2 = ft_setstr();
 				n = ft_setsizet();
-				result = ft_memcmp(str1, str2, n);
-				if (result > 0)
-					printf("Second string is less than first string\n");
-				else if (result < 0)
-					printf("First string is less than second string\n");
-				else
-					printf("Strings are equal\n");
-				break;
-			case 'T': case 'T':
+				printf("Your functions returns: %d, the original function returns: %d", ft_memcmp(str1, str2, n), memcmp(str1, str2, n));
+			case 'T': case 't':
 				printf("\nTESTS ft_strnstr\n");
-				str1 = setstr();
-				str2 = setstr();
+				str1 = ft_setstr();
+				str2 = ft_setstr();
+				strcpy(str3, str1);
+				strcpy(str4, str2);
 				printf("Enter a integer, up to %d: ", len);
-				scanf("%d", &n);
-				printf("First string is %s and second strind is is %s and n is %d\n", str1, str2, n);
-				p_result = ft_strnstr(str1, str2, n);
-				printf("Result is %s\n", p_result);
+				scanf("%zd", &n);
+				printf("Your functions returns: %s, the original function returns: %s", ft_strnstr(str1, str2, n), strnstr(str1, str2, n));
 				break;
 			case 'U': case 'u':
 				printf("\nTESTS ft_atoi\n");
 				str1 = ft_setstr();
-				num = ft_atoi(str1);
-				printf("The %d was taken from %s via ft_atoi\n", num, str1);
+				printf("Your functions returns: %d, the original function returns: %d", ft_atoi(str1), atoi(str1));
 				break;
-			case 'V': case 's':
+			case 'V': case 'v':
 				printf("\nTESTS ft_calloc\n");
 				n = ft_setsizet();
 				int size;
 				printf("Enter the size of the variable you want to have an array of: 1 - Char 4 - Integer - 8 Long Int 16 - Long Long Int: ");
-				scanf("%d", size);
-				p_result = ft_calloc(n, size);
-				printf("You have created an array that can hold %d items: %s\n", n, p_result);
+				scanf("%d", &size);
+				p_char1 = ft_calloc(n, size);
+				printf("Your functions returns: %s, the original function returns: %s", ft_calloc(n, size), calloc(n, size));
 				break;
-			case 'W': case 't':
+			case 'W': case 'w':
 				printf("\nTESTS ft_strdup\n");
 				str1 = ft_setstr();
 				str2 = ft_strdup(str1);
-				printf("String 1 is: %s and String 2 is a dupilicate: %s\n", str1, str2);
+				str3 = strdup(str1);
+				printf("Your functions returns: %s, the original function returns: %s", str2, str3);
 				break;
 			case 'X': case 'x':
 				printf("\nTESTS ft_substr\n");
 				str1 = ft_setstr();
 				num = ft_setint();
 				str2 = ft_substr(str1, num, ft_strlen(str1));
-				printf("Str2: %s is a substring of Str1: %s\n", str2, str1);
+				str3 = substr(str1, num, strlen(str1));
+				printf("Your functions returns: %s, the original function returns: %s", str2, str3);
 				break;
 			case 'Y': case 'y':
 				printf("\nTESTS ft_strjoin\n");
 				str1 = ft_setstr();
 				str2 = ft_setstr();
-				p_result = ft_strjon(str1, str2);
-				printf("The joining of Str1: %s and Str2: %s is: %s\n", str1, str2, p_result);
+				str3 = ft_strjoin(str1, str2);
+				str4 = strjoin(str1, str2);
+				printf("Your functions returns: %s, the original function returns: %s", str3, str4);
 				break;
 			case 'Z': case 'z':
 				printf("\nTESTS ft_strtrim\n");
@@ -286,11 +304,143 @@ int	main(void)
 				str1 = ft_setstr();
 				printf("Now you should enter what that set of beginning and ending characters was");
 				str2 = ft_setstr();
-				p_result = ft_strtrim(str1, str2);
-				printf("The result of trimming %s from %s is %s\n", str2. str1, p_result);
+				str3 = ft_strtrim(str1, str2);
+				str4 = strtrim(str1, str2);
+				printf("Your functions returns: %s, the original function returns: %s", str3, str4);
+				break;
+			case '0':
+				printf("\nTESTS ft_split\n");
+				printf("You will be prompted to enter a string. Be sure to enter one that has a certain character ever so often.\n");
+				str1 = ft_setstr();
+				printf("You will be prompted to now provide the character that divides the string.\n");
+				c = ft_setchar();
+				p_arr1 = ft_split(str1, c);
+				p_arr2 = strtok(c, str1);
+				printf("The split string by %c looks like this:\n", c);
+				i = 0;
+				while (p_arr1[i] && p_arr2[2])
+				{
+					printf("Your function returns: %s\n", p_arr1[i]);
+					printf("Original function returns: %s\n", p_arr2[i]);
+					++i;
+				}
+				break;
+			case '1':
+				printf("\nTESTS ft_itoa\n");
+				num = ft_setint();
+				str1 = ft_itoa(num);
+				str2 = itoa(num);
+				printf("Your functions returns: %s, the original function returns: %s", str1, str2);
+				break;
+			case '2':
+				printf("\nTESTS ft_strmapi\n");
+				str1 = ft_setstr();
+				str2 = ft_strmapi(str1, test);
+				str3 = strmapi(str1, test);
+				printf("Your functions returns: %s, the original function returns: %s", str2, str3);
+				break;
+			case '3':
+				printf("\nTESTS ft_striteri\n");
+				str1 = ft_setstr();
+				strcpy(str2, str1);
+				ft_striteri(str1, test);
+				striteri(str2, test);
+				printf("Your functions returns: %s, the original function returns: %s", str1, str2);
+				break;
+			case '4':
+				printf("\nTESTS ft_putchar_fd\n");
+				c = ft_setchar();
+				fd = 1;
+				printf("\nYour function:\n");
+				ft_putchar_fd(c, fd);
+				printf("\nOriginal function:\n");
+				putrchar_fd(c, fd);
+				break;
+			case '5':
+				printf("\nTESTS ft_putstr_fd\n");
+				str1 = ft_setstr();
+				fd = 1;
+				printf("\nYour function:\n");
+				ft_putstr_fd(str1, fd);
+				printf("\nOriginal function:\n");
+				putstr_fd(str1, fd);
+				break;
+			case '6':
+				printf("\nTESTS ft_putendl_fd\n");
+				str1 = ft_setstr();
+				fd = 1;
+				printf("\nYour function:\n");
+				ft_putendl_fd(str1, fd);
+				printf("\nOriginal function:\n");
+				putendl_fd(str1, fd);
+				break;
+			case '7':
+				printf("\nTESTS ft_putnbr_fd\n");
+				num = ft_setint();
+				fd = 1;
+				printf("\nYour function:\n");
+				ft_putnbr_fd(num, fd);
+				printf("\nOriginal function:\n");
+				putnbr_fd(num, fd);
+				break;
+			case '8':
+				printf("\nTESTS ft_lstnew\n");
+				str1 = ft_setstr();
+				first = ft_lstnew(str1);
+				list = &first;
+				printf("Your linked list node contains the following content: %s", first->content);
+				break;
+			case '9':
+				printf("\nTESTS ft_lstadd_front\n");
+				str2 = ft_setstr();
+				ft_lstadd_front(list, ft_lstnew(str2));
+				print_list(*list);
+				break;
+			case '!':
+				printf("\nTESTS ft_lstsize\n");
+				printf("Your list is %d long\n", ft_lstsize(*list));
+				break;
+			case '@':
+				printf("\nTESTS ft_lstlast\n");
+				printf("Last element: %s\n", ft_lstlast(*list)->content);
+				break;
+			case '#':
+				printf("\nTESTS ft_lstadd_back\n");
+				str3 = ft_setstr();
+				ft_lstadd_back(*list, ft_lstnew(str3));
+				print_list(*list);
+				break;
+			case '&':
+				printf("\nTESTS ft_listiter\n");
+				printf("ft_lstiter with print_content\n");
+				ft_lstiter(*list, &print_content);
+				break;
+			case '?':
+				printf("\nTESTS ft_lstmap\n");
+				t_list	*list_copy = ft_lstmap(first, &list, &free);
+				print_list(list_copy);
+				break;
+			case '$':
+				printf("\nTESTS ft_lstdelone\n");
+				num = ft_lstsize(*list);
+				printf("Pick a number between 1 and %d\n", num);
+				scanf("%d", &num);
+				printf("List before deleting node %d:\n", num);
+				print_list(list_copy);
+				ft_lstdelone(&list_copy, num);
+				printf("List after deleting node %d:\n", num);
+				print_list(list_copy);
+				break;
+			case '%':
+				printf("\nTESTS ft_lstclear\n");
+				print_list(list_copy);
+				ft_lstclear(&list_copy, &free);
+				print_list(list_copy);
 				break;
 			case '*':
 				return (0);
+			default:
+				break;
 		}
 	}
 
@@ -325,14 +475,38 @@ size_t ft_setsizet()
 {
 	size_t num;
 	printf("\nEnter a number from 0 to %d (but you don't have to test various lengths): ", len);
-	scanf("%d", &num);
+	scanf("%zd", &num);
 	return (num);
 }
 
 int ft_setint()
 {
-	int num:
+	int num;
 	printf("\nEnter a number (no larger than %d to avoid overflow): ", len);
 	scanf("%d", &num);
 	return (num);
+}
+
+char    test(unsigned int i, char str)
+{
+    printf("My inner function: index = %d and %c\n", i, str);
+    return (str);
+}
+
+void print_list(t_list *lst)
+{
+	size_t	i;
+
+	i = 0;
+	while (lst) {
+		printf("%zu:%s\n", i, lst->content);
+		lst = lst->next;
+		++i;
+	}
+	printf("\n");
+}
+
+void print_content(void *content)
+{
+	printf("%s\n", content);
 }
