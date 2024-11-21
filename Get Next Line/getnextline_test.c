@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 
     (void)argc;
 	i = 0;
+	printf("%zu\n", sysconf(_SC_OPEN_MAX));
     fd = open(argv[1], O_RDONLY);
     while (i < MAX_CALLS)
 	{
